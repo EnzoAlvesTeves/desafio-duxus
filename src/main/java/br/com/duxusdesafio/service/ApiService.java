@@ -43,11 +43,11 @@ public class ApiService {
         }).findFirst().orElse(null);
         return timeDaData;
     }
-
     /**
      * Vai retornar o integrante que tiver presente na maior quantidade de times
      * dentro do período
      */
+
     public Integrante integranteMaisUsado(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes){
         Map<Integrante, Integer> contador = new HashMap<>();
 
@@ -65,12 +65,11 @@ public class ApiService {
 
         return Collections.max(contador.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
-
-
     /**
      * Vai retornar uma lista com os nomes dos integrantes do time mais comum
      * dentro do período
      */
+
     public List<String> timeMaisComum(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes){
         Map<Time, Integer> contador = new HashMap<>();
 
@@ -93,15 +92,26 @@ public class ApiService {
                 .collect(Collectors.toList());
     }
 
-
     /**
      * Vai retornar a função mais comum nos times dentro do período
      */
     public String funcaoMaisComum(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes){
-        // TODO Implementar método seguindo as instruções!
-        return null;
-    }
+        Map<String, Integer> contador = new HashMap<>();
 
+        todosOsTimes.stream()
+                .filter(time -> time.getData().isBefore(dataFinal) && time.getData().isAfter(dataInicial))
+                .forEach(time -> time.getComposicaoTime().forEach(composicao -> {
+                    Integer quantidade = contador.get(composicao.getIntegrante().getFuncao());
+
+                    if (quantidade == null) {
+                        contador.put(composicao.getIntegrante().getFuncao(), 1);
+                    } else {
+                        contador.put(composicao.getIntegrante().getFuncao(), quantidade+1);
+                    }
+                }));
+
+        return Collections.max(contador.entrySet(), Map.Entry.comparingByValue()).getKey();
+    }
 
     /**
      * Vai retornar o nome da Franquia mais comum nos times dentro do período
@@ -112,7 +122,6 @@ public class ApiService {
     }
 
 
-
     /**
      * Vai retornar o nome da Franquia mais comum nos times dentro do período
      */
@@ -121,7 +130,6 @@ public class ApiService {
         return null;
     }
 
-
     /**
      * Vai retornar o número (quantidade) de Funções dentro do período
      */
@@ -129,6 +137,4 @@ public class ApiService {
         // TODO Implementar método seguindo as instruções!
         return null;
     }
-
-
 }
