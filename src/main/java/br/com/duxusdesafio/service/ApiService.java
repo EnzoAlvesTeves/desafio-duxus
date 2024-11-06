@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service que possuirá as regras de negócio para o processamento dos dados
@@ -46,18 +49,50 @@ public class ApiService {
      * dentro do período
      */
     public Integrante integranteMaisUsado(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes){
-        // TODO Implementar método seguindo as instruções!
-        return null;
+        Map<Integrante, Integer> contador = new HashMap<>();
+
+        todosOsTimes.stream()
+                .filter(time -> time.getData().isBefore(dataFinal) && time.getData().isAfter(dataInicial))
+                .forEach(time -> time.getComposicaoTime().forEach(composicao -> {
+                    Integer quantidade = contador.get(composicao.getIntegrante());
+
+                    if (quantidade == null) {
+                        contador.put(composicao.getIntegrante(), 1);
+                    } else {
+                        contador.put(composicao.getIntegrante(), quantidade+1);
+                    }
+                }));
+
+        return Collections.max(contador.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
+
 
     /**
      * Vai retornar uma lista com os nomes dos integrantes do time mais comum
      * dentro do período
      */
     public List<String> timeMaisComum(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes){
-        // TODO Implementar método seguindo as instruções!
-        return null;
+        Map<Time, Integer> contador = new HashMap<>();
+
+        todosOsTimes.stream()
+                .filter(time -> time.getData().isBefore(dataFinal) && time.getData().isAfter(dataInicial))
+                .forEach(time -> {
+                    Integer quantidade = contador.get(time);
+                    if (quantidade == null) {
+                        contador.put(time, 1);
+                    } else {
+                        contador.put(time, quantidade+1);
+                    }
+                });
+
+        Time timeMaisComum = Collections.max(contador.entrySet(), Map.Entry.comparingByValue()).getKey();
+
+        return timeMaisComum.getComposicaoTime()
+                .stream()
+                .map(composicaoTime -> composicaoTime.getIntegrante().getNome())
+                .collect(Collectors.toList());
     }
+
 
     /**
      * Vai retornar a função mais comum nos times dentro do período
@@ -66,6 +101,7 @@ public class ApiService {
         // TODO Implementar método seguindo as instruções!
         return null;
     }
+
 
     /**
      * Vai retornar o nome da Franquia mais comum nos times dentro do período
@@ -76,6 +112,7 @@ public class ApiService {
     }
 
 
+
     /**
      * Vai retornar o nome da Franquia mais comum nos times dentro do período
      */
@@ -84,6 +121,7 @@ public class ApiService {
         return null;
     }
 
+
     /**
      * Vai retornar o número (quantidade) de Funções dentro do período
      */
@@ -91,5 +129,6 @@ public class ApiService {
         // TODO Implementar método seguindo as instruções!
         return null;
     }
+
 
 }
