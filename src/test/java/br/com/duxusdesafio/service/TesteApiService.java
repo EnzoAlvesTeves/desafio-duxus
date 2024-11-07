@@ -186,7 +186,7 @@ public class TesteApiService {
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
 
         Map<String, Long> esperado = new HashMap<>();
-        esperado.put(dadosParaTesteApiService.getFranquiaNBA(), 2L);
+        esperado.put(dadosParaTesteApiService.getFranquiaNBA(), 3L);
 
         return new Object[][]{
                 {

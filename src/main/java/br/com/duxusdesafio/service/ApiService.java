@@ -138,8 +138,22 @@ public class ApiService {
      * Vai retornar o nome da Franquia mais comum nos times dentro do período
      */
     public Map<String, Long> contagemPorFranquia(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes){
-        // TODO Implementar método seguindo as instruções!
-        return null;
+        Map<String, Long> contador = new HashMap<>();
+
+        todosOsTimes.stream()
+                .filter(time -> time.getData().isBefore(dataFinal) && time.getData().isAfter(dataInicial))
+                .forEach(time -> time.getComposicaoTime().forEach(composicao -> {
+                    Long quantidade = contador.get(composicao.getIntegrante().getFranquia());
+
+                    if (quantidade == null) {
+                        contador.put(composicao.getIntegrante().getFranquia(), 1L);
+                    } else {
+                        contador.put(composicao.getIntegrante().getFranquia(), quantidade+1);
+                    }
+                }));
+
+
+        return contador;
     }
 
     /**
